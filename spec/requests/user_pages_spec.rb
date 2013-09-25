@@ -16,14 +16,37 @@ describe "User pages" do
 
     describe "pagination" do
 
-      before(:all) { 30.times { FactoryGirl.create(:user) } }
-      after(:all)  { User.delete_all }
+      describe "one page" do
 
-      it { should have_selector('div.pagination') }
+        before(:all) { 300.times { FactoryGirl.create(:user) } }
+        after(:all)  { User.delete_all }
 
-      it "should list each user" do
-        User.paginate(page: 1).each do |user|
-          expect(page).to have_selector('li', text: user.name)
+        it { should have_selector('div.pagination') }
+
+        it "should list each user" do
+          User.paginate(page: 1).each do |user|
+            expect(page).to have_selector('li', text: user.name)
+          end
+        end
+      end
+
+      describe "multi page" do
+
+        before(:all) { 300.times { FactoryGirl.create(:user) } }
+        after(:all)  { User.delete_all }
+
+        it { should have_selector('div.pagination') }
+
+        it "should list first page users" do
+          User.paginate(page: 1).each do |user|
+            expect(page).to have_selector('li', text: user.name)
+          end
+        end
+
+        it "should not list users from other page" do
+          User.paginate(page: 2).each do |user|
+            expect(page).not_to have_selector('li', text: user.name)
+          end
         end
       end
     end

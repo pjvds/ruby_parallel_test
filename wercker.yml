@@ -4,13 +4,19 @@ services:
 build:
   steps:
     - bundle-install
-    - rails-database-yml
+    - script:
+        name: Create database.yml
+        code: |
+            cp config/database.yml.example config/database.yml
+            info "Database.yml content:"
+            info $(cat config/database.yml)
     - script:
         name: Setup database
         code: |
-            bundle exec rake db:migrate
-            bundle exec rake db:test:prepare
+            bundle exec rake parallel:create
+            bundle exec rake parallel:migrate
+            bundle exec rake parallel:prepare
     - script:
         name: Test
         code: |
-            bundle exec rspec spec/
+            bundle exec parallel:spec spec/

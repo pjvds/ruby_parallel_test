@@ -19,4 +19,4 @@ build:
     - script:
         name: Test
         code: |
-            bundle exec parallel:spec spec/
+            bundle exec rake parallel:spec spec/
